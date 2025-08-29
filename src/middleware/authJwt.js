@@ -22,3 +22,12 @@ export const verifyTokenAdmin = asyncHandling(async (req, res, next) => {
 
 
 });
+
+// middleware/language.js
+export const languageMiddleware = (req, res, next) => {
+  // اقرأ اللغة من Accept-Language أو خلي الافتراضي "en"
+  const langHeader = req.headers["accept-language"];
+  const supportedLangs = ["ar", "en"]; // اللغات المدعومة
+  req.lang = supportedLangs.includes(langHeader) ? langHeader : "en";
+  next();
+};

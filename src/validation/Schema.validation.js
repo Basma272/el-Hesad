@@ -9,17 +9,11 @@ export const loginVschema = Joi.object ({
 })
 
 export const contactVschema = Joi.object ({
-    username: generalvalidate.username,
     email: generalvalidate.email,
-    message: generalvalidate.message,
-
 })
 
 
 export const feedbackVschema = Joi.object ({
-    username: generalvalidate.username,
-    feedback: generalvalidate.message,
     rating: generalvalidate.rating,
-
 })
 

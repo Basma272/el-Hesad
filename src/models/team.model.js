@@ -3,12 +3,18 @@
 import mongoose from "mongoose";
 
 const TeamSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  role: { type: String, required: true },
+  name: { 
+    en:{ type: String, required: true },
+    ar:{ type: String, required: true }
+  },
+  role: { 
+    en:{ type: String, required: true },
+    ar:{ type: String, required: true }
+  },
   image: String,
-  socialLinks: {
-    linkedin: String,
-  }
+
+  linkedin: String,
+
 });
 
 export const TeamModel = mongoose.model("TeamMember", TeamSchema);

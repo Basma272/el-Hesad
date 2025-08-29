@@ -4,6 +4,7 @@ import { Add_contact ,
         get_contact, 
         } from "../controller/contact.controller.js";
 import { validate } from "../middleware/validation.js";
+import { verifyTokenAdmin } from "../middleware/authJwt.js"
 
 import {
 contactVschema,
@@ -16,6 +17,6 @@ const router = express.Router();
 router.post("/", validate(contactVschema) ,   Add_contact);
 
 // 📋 Get all contact
-router.get("/", get_contact );
+router.get("/",verifyTokenAdmin , get_contact );
 
 export default router;

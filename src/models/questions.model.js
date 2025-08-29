@@ -5,13 +5,13 @@ import mongoose from "mongoose";
 
 const QuestionsSchema = new mongoose.Schema({
   question: {
-    type: String,
-    required: true,
+    en:{ type: String, required: true, },
+    ar:{ type: String, required: true, }
   },
 
   answer: {
-    type: String,
-    required: true,
+    en:{ type: String, required: true, },
+    ar:{ type: String, required: true, }
   },
 }, { timestamps: true });
 

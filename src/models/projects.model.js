@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 
 const ProjectSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: { 
+        en: { type: String, required: true },
+       ar: { type: String, required: true }
+  },
   location: {
     lat: { type: Number },
     lng: { type: Number }

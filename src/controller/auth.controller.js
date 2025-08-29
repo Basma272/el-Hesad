@@ -8,7 +8,9 @@ export const login = asyncHandling (
     const { username, password } = req.body;
 
     const admin = await AdminModel.findOne({username})
-   
+    if(! admin){
+        return res.status(401).json({ message: "Invalid username or password" });
+    } 
     if (
       username === admin.username &&
       password === admin.password 
@@ -31,9 +33,6 @@ export const login = asyncHandling (
 
      });
   
-    }else{
-  return res.status(401).json({ message: "Invalid username or password" });
-
     }
 
 })

@@ -1,37 +1,48 @@
 import { asyncHandling } from "../utils/error-Handling.js";
 import { ArticleModel } from "../models/articles.model.js";
 import { sucssesResponse } from "../utils/response-Handling.js";
+import { translate } from "../utils/translate.js";
 
 // 📝 Create Article
 export const createArticle = asyncHandling(async (req, res) => {
-  const { number, date, author, title, content, image } = req.body;
+  const { date, author, title, content, description } = req.body;
 
-    const existitle = await ArticleModel.findOne({title})
-    if (existitle){  res.status(409).json({ message:"This artical title already exists" }); } else{
+  const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
-        
+  const existitle = await ArticleModel.findOne({ title });
+  if (existitle) {
+    return res
+      .status(409)
+      .json({ message: "This article title already exists" });
+  }
+
   const article = await ArticleModel.create({
-    number,
     date,
     author,
     title,
     content,
-    image,
+    description,
+    image: imageUrl,
   });
 
   return sucssesResponse({
     res,
     code: 201,
     message: "✅ Article created successfully",
-    data: article,
+    data: translate(article.toObject(), req.lang), // 👈 ترجمة
   });
-      }
-
 });
 
 // ✏️ Update Article
 export const updateArticle = asyncHandling(async (req, res) => {
   const { id } = req.params;
+
+  if (!req.file)
+    return res
+      .status(400)
+      .json({ success: false, message: "No file uploaded" });
+
+  const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
 
   const article = await ArticleModel.findByIdAndUpdate(
     id,
@@ -40,22 +51,22 @@ export const updateArticle = asyncHandling(async (req, res) => {
       date: req.body.date,
       author: req.body.author,
       content: req.body.content,
-      image: req.body.image,
+      description: req.body.description,
+      image: imageUrl,
     },
     { new: true }
   );
 
   if (!article) {
-    return res.status(404).json({
-      success: false,
-      message: "Article not found",
-    });
+    return res
+      .status(404)
+      .json({ success: false, message: "Article not found" });
   }
 
   return sucssesResponse({
     res,
     message: "✅ Article updated successfully",
-    data: article,
+    data: translate(article.toObject(), req.lang), // 👈 ترجمة
   });
 });
 
@@ -63,46 +74,63 @@ export const updateArticle = asyncHandling(async (req, res) => {
 export const getArticlesList = asyncHandling(async (req, res) => {
   const { limit } = req.query;
 
-  const articles = await ArticleModel.find()
-    .select("title author date image")
+  const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
+
+  const articles = await ArticleModel.find() .lean()
+    .select("title author date image description")
     .sort({ date: -1 })
-    .limit(Number(limit) || 0);
+    .limit(Number(limit) || 0)
+   
 
   if (articles.length === 0) {
-    return res.status(404).json({
-      success: false,
-      message: "No articles found",
-    });
+    return res
+      .status(404)
+      .json({ success: false, message: "No articles found" });
   }
-
+    const translated = translate(articles , lang);
+          
   return sucssesResponse({
     res,
     message: "✅ Articles list fetched",
-    data: articles,
+    data: translated, // 👈 ترجمة
   });
 });
 
 // 📖 Get Article Details
 export const getArticleDetails = asyncHandling(async (req, res) => {
   const { id } = req.params;
+ const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
 
-  const article = await ArticleModel.findById(id);
+  const article = await ArticleModel.findById(id).lean();
+
   if (!article) {
-    return res.status(404).json({
-      success: false,
-      message: "Article not found",
-    });
+    return res
+      .status(404)
+      .json({ success: false, message: "Article not found" });
   }
+    const translated = translate(article , lang);
+          
 
   return sucssesResponse({
     res,
     message: "✅ Article details fetched",
-    data: article,
+    data: translated // 👈 ترجمة
   });
 });
 
 // 🔍 Search Articles
 export const searchArticles = asyncHandling(async (req, res) => {
+       const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
+
   const { keyword } = req.query;
 
   if (!keyword) {
@@ -115,12 +143,13 @@ export const searchArticles = asyncHandling(async (req, res) => {
   const articles = await ArticleModel.find(
     {
       $or: [
-        { title: { $regex: keyword, $options: "i" } },
+        { "title.ar": { $regex: keyword, $options: "i" } },
+        { "title.en": { $regex: keyword, $options: "i" } },
         { author: { $regex: keyword, $options: "i" } },
       ],
     },
-    "title author date image"
-  ).sort({ date: -1 });
+    "title author date image description"
+  ).lean().sort({ date: -1 });
 
   if (articles.length === 0) {
     return res.status(404).json({
@@ -128,27 +157,27 @@ export const searchArticles = asyncHandling(async (req, res) => {
       message: "No articles matched your search",
     });
   }
+  
+    const translated = translate(articles , lang);
+          
+
 
   return sucssesResponse({
     res,
     message: "✅ Search results fetched",
-    data: articles,
+    data:translated , // 👈 ترجمة
   });
 });
 
-// 🗑️ Delete Article
+// 🗑 Delete Article
 export const deleteArticle = asyncHandling(async (req, res) => {
-
   const article = await ArticleModel.findByIdAndDelete(req.params.id);
 
   if (!article) {
-    return res.status(404).json({
-      success: false,
-      message: "Article not found",
-    });
-  }
-
-  return sucssesResponse({
+    return res
+      .status(404)
+      .json({ success: false, message: "Article not found" });
+  }return sucssesResponse({
     res,
     message: "✅ Article deleted successfully",
   });

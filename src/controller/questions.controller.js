@@ -1,6 +1,7 @@
 import {QuestionsModel} from "../models/questions.model.js";
 import { asyncHandling } from "../utils/error-Handling.js";
 import { sucssesResponse } from "../utils/response-Handling.js";
+import { translate } from "../utils/translate.js"
 
 export const create = asyncHandling(async (req , res )=>{
     const { question , answer }= req.body
@@ -20,13 +21,21 @@ export const create = asyncHandling(async (req , res )=>{
 })
 
 export const getallqustion = asyncHandling(async (req , res )=>{
+      const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
+
     const { limit }= req.query
-    const questions = await QuestionsModel.find()
+    const questions = await QuestionsModel.find().lean()
     .sort({ date: -1 })
     .limit(Number(limit)|| 0)
+
+      const translated = translate(questions, lang);
+    
         sucssesResponse({
         res,
-        data: {questions},
+        data: translated
 })
 })
 

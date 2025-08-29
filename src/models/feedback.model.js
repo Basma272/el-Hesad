@@ -5,9 +5,15 @@ import mongoose from "mongoose";
 
 const feedbacklSchema = new mongoose.Schema({
 
-  username: { type: String}, 
+  username: { 
+    en: {type: String},
+    ar: {type: String}
+}, 
 
-  feedback: { type: String},
+  feedback: { 
+  en: {type: String},
+  ar: {type: String}
+  },
 
   image: String,
 

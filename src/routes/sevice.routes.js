@@ -1,26 +1,27 @@
 import express from "express";
 import { verifyTokenAdmin } from "../middleware/authJwt.js" ;
-import{ creatSrvice , 
+import{ createService , 
         updateService ,
-        deleteSrvice ,
+        deleteService ,
         getAllServices,
         getServiceDetails} from "../controller/service.controller.js"
+        import  {upload} from "./upload.routes.js"
 
 const router = express.Router();
 
 // ➕ إضافة خدمة جديدة
-router.post("/", verifyTokenAdmin, creatSrvice );
+router.post("/",  upload.single("image") ,verifyTokenAdmin, createService );
 
 // 📋 عرض كل الخدمات للكل
 router.get("/", getAllServices   );
 
 // 📋 عرض كل تفاصيل الخدمه
-router.get("/:id ", getServiceDetails   );
+router.get("/:id", getServiceDetails   );
 // ✏️ تعديل خدمة
-router.put( "/:id", verifyTokenAdmin ,updateService );
+router.put( "/:id",   upload.single("image") ,verifyTokenAdmin ,updateService );
 
 // ❌ حذف خدمة
-router.delete("/:id", verifyTokenAdmin, deleteSrvice );
+router.delete("/:id", verifyTokenAdmin, deleteService );
 
 export default router;
 

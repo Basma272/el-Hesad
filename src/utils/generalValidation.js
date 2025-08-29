@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const generalvalidate = {
-  username: Joi.string().min(2).max(20).messages({
+  username:  Joi.string().min(2).max(20).messages({
     "string.min": "Username must be at least 2 characters long",
     "string.max": "Username must not exceed 20 characters",
   }),

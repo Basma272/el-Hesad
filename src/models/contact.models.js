@@ -2,8 +2,14 @@ import mongoose from "mongoose";
 
 const contactSchema = new mongoose.Schema({
 
-  username: { type: String },
-    message: { type: String },
+  username: { 
+    en :{ type: String } ,
+    ar :{ type: String }
+  },
+    message: { 
+    en :{ type: String } ,
+    ar :{ type: String }
+    },
     email: { type: String},
 
 })

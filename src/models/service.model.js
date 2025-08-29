@@ -3,22 +3,15 @@ import mongoose from "mongoose";
 
 
 const serviceSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+title: {
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
   },
-
   description: {
-    type: String,
-    required: true,
+    en: { type: String, required: true },
+    ar: { type: String, required: true }
   },
-
-  image: {
-    type: String,
-  
-  },
-
-
+  image: { type: String }, // لو عندك صورة
 }, { timestamps: true });
 
 export const ServiceModel = mongoose.model("Service", serviceSchema);

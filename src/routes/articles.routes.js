@@ -8,11 +8,14 @@ import {
   deleteArticle,
   searchArticles
 } from "../controller/articles.controller.js";
-
 const router = express.Router();
 
-// 📝 Create Article
-router.post("/", verifyTokenAdmin, createArticle);
+import  {upload} from "./upload.routes.js"
+
+//📝 Create Article
+router.post("/", verifyTokenAdmin,
+  upload.single("image"), 
+   createArticle);
 
 // 📃 Get Articles List (with optional limit)
 router.get("/", getArticlesList);
@@ -24,7 +27,7 @@ router.get("/search", searchArticles);
 router.get("/:id", getArticleDetails);
 
 // ✏️ Update Article
-router.put("/:id", verifyTokenAdmin, updateArticle);
+router.put("/:id", verifyTokenAdmin,  upload.single("image") ,updateArticle);
 
 // 🗑️ Delete Article
 router.delete("/:id", verifyTokenAdmin, deleteArticle);

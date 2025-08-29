@@ -2,14 +2,13 @@
 import express from "express";
 import { verifyTokenAdmin } from "../middleware/authJwt.js"
 import { add_member , Update_member , delete_member , allTeam } from "../controller/team.controller.js";
-const upload = multer({ dest: "uploads/" });
-import multer from "multer";
+  import  {upload} from "./upload.routes.js"
 
 const router = express.Router();
 
 // ➕ Add new team member
 router.post("/",  
-  //  verifyTokenAdmin , 
+    verifyTokenAdmin , 
   upload.single("image"),
     add_member);
 
@@ -17,7 +16,8 @@ router.post("/",
 router.get("/", allTeam);
 
 // ✏️ Update team member
-router.put("/:id", verifyTokenAdmin , Update_member);
+router.put("/:id",   verifyTokenAdmin , 
+  upload.single("image"), Update_member);
 
 // ❌ Delete team member
 router.delete("/:id", verifyTokenAdmin, delete_member);

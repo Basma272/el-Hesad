@@ -13,9 +13,6 @@ import contactRoutes from "./src/routes/contact.routes.js"
 import uploadRoutes from "./src/routes/upload.routes.js"
 import { GlobalErrorHandler } from "./src/utils/error-Handling.js";
 
-
-
-
 dotenv.config();
 ConnectDB();
 
@@ -25,7 +22,7 @@ app.use("/uploads",express.static("uploads"));
 
 // //  API Routes 
 app.use("/api/auth", authRoutes);
-app.use("/api/roicalculator", roiRoutes);
+app.use("/api/roicalculator", roiRoutes); 
 app.use("/api/services", servicesRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/projects", projecsRoutes );
