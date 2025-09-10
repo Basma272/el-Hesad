@@ -2,7 +2,7 @@
 import express from "express";
 import { verifyTokenAdmin } from "../middleware/authJwt.js"
 import { add_member , Update_member , delete_member , allTeam } from "../controller/team.controller.js";
-  import  {upload} from "./upload.routes.js"
+        import  {upload} from "../controller/file.controller.js"
 
 const router = express.Router();
 

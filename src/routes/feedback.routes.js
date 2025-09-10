@@ -4,7 +4,7 @@ import { Add_feedback , get_feedback,   } from "../controller/feedback.controlle
 import { verifyTokenAdmin } from "../middleware/authJwt.js"
 import { validate } from "../middleware/validation.js";
 import { feedbackVschema } from "../validation/Schema.validation.js";
-import  { upload } from "./upload.routes.js"
+        import  {upload} from "../controller/file.controller.js"
 
 
 const router = express.Router();

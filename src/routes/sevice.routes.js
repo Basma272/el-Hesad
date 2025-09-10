@@ -4,7 +4,7 @@ import{ createService ,
         updateService ,
         deleteService ,
         getAllServices,} from "../controller/service.controller.js"
-        import  {upload} from "./upload.routes.js"
+        import  {upload} from "../controller/file.controller.js"
 
 const router = express.Router();
 

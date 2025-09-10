@@ -9,7 +9,7 @@ import {
 } from "../controller/articles.controller.js";
 const router = express.Router();
 
-import  {upload} from "./upload.routes.js"
+        import  {upload} from "../controller/file.controller.js"
 
 //📝 Create Article
 router.post("/", verifyTokenAdmin,
