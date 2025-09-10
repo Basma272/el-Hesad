@@ -96,6 +96,31 @@ export const getArticlesList = asyncHandling(async (req, res) => {
   });
 });
 
+// 📖 Get Article Details
+export const getArticleDetails = asyncHandling(async (req, res) => {
+  const { id } = req.params;
+ const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
+
+  const article = await ArticleModel.findById(id).lean();
+
+  if (!article) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Article not found" });
+  }
+    const translated = translate(article , lang);
+          
+
+  return sucssesResponse({
+    res,
+    message: "✅ Article details fetched",
+    data: translated // 👈 ترجمة
+  });
+});
+
 
 // 🔍 Search Articles
 export const searchArticles = asyncHandling(async (req, res) => {

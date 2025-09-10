@@ -64,6 +64,30 @@ export const getAllServices = asyncHandling(async (req, res) => {
   });
 });
 
+// 📖 Get Service Details
+export const getServiceDetails = asyncHandling(async (req, res) => {
+  const { id } = req.params;
+  const lang =
+    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
+      ? "ar"
+      : "en";
+
+  const service = await ServiceModel.findById(id).lean();
+
+  if (!service) {
+    return res.status(404).json({
+      success: false,
+      message: "Service not found",
+    });
+  }
+
+  return sucssesResponse({
+    res,
+    message: "✅ Service details fetched",
+    data: translate(service, lang), // 👈 الترجمة هنا
+  });
+});
+
 
 // ✏️ تعديل خدمة PUT ✅
 export const updateService = asyncHandling(async (req, res) => {
@@ -88,6 +112,8 @@ export const updateService = asyncHandling(async (req, res) => {
     data: updated,
   });
 });
+
+
 
 // ❌ حذف خدمة ✅
 export const deleteService = asyncHandling(async (req, res) => {
