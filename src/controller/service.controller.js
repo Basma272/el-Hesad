@@ -41,16 +41,13 @@ export const createService = asyncHandling(async (req, res) => {
 
 // 📃 Get Services List
 export const getAllServices = asyncHandling(async (req, res) => {
-  const { limit } = req.query;
   const lang =
     req.headers["accept-language"]?.toLowerCase().startsWith("ar")
       ? "ar"
       : "en";
 
   const services = await ServiceModel.find()
-    .select("title image description")
     .sort({ date: -1 })
-    .limit(Number(limit) || 0)
     .lean();
 
   if (!services || services.length === 0) {
@@ -62,34 +59,11 @@ export const getAllServices = asyncHandling(async (req, res) => {
 
   return sucssesResponse({
     res,
-    message: "✅ Services list fetched",
+    message: "✅get all Services ",
     data: translate(services, lang), // 👈 الترجمة هنا
   });
 });
 
-// 📖 Get Service Details
-export const getServiceDetails = asyncHandling(async (req, res) => {
-  const { id } = req.params;
-  const lang =
-    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
-      ? "ar"
-      : "en";
-
-  const service = await ServiceModel.findById(id).lean();
-
-  if (!service) {
-    return res.status(404).json({
-      success: false,
-      message: "Service not found",
-    });
-  }
-
-  return sucssesResponse({
-    res,
-    message: "✅ Service details fetched",
-    data: translate(service, lang), // 👈 الترجمة هنا
-  });
-});
 
 // ✏️ تعديل خدمة PUT ✅
 export const updateService = asyncHandling(async (req, res) => {

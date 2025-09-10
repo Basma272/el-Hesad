@@ -3,8 +3,7 @@ import { verifyTokenAdmin } from "../middleware/authJwt.js" ;
 import{ createService , 
         updateService ,
         deleteService ,
-        getAllServices,
-        getServiceDetails} from "../controller/service.controller.js"
+        getAllServices,} from "../controller/service.controller.js"
         import  {upload} from "./upload.routes.js"
 
 const router = express.Router();
@@ -13,10 +12,8 @@ const router = express.Router();
 router.post("/",  upload.single("image") ,verifyTokenAdmin, createService );
 
 // 📋 عرض كل الخدمات للكل
-router.get("/", getAllServices   );
+router.get("/", getAllServices   ); 
 
-// 📋 عرض كل تفاصيل الخدمه
-router.get("/:id", getServiceDetails   );
 // ✏️ تعديل خدمة
 router.put( "/:id",   upload.single("image") ,verifyTokenAdmin ,updateService );
 

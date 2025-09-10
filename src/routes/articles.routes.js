@@ -3,7 +3,6 @@ import express from "express";
 import {
   createArticle,
   getArticlesList,
-  getArticleDetails,
   updateArticle,
   deleteArticle,
   searchArticles
@@ -22,9 +21,6 @@ router.get("/", getArticlesList);
 
 // 🔍 Search Articles
 router.get("/search", searchArticles);
-
-// 📖 Get Article Details
-router.get("/:id", getArticleDetails);
 
 // ✏️ Update Article
 router.put("/:id", verifyTokenAdmin,  upload.single("image") ,updateArticle);

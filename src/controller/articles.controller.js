@@ -72,17 +72,14 @@ export const updateArticle = asyncHandling(async (req, res) => {
 
 // 📃 Get Articles List
 export const getArticlesList = asyncHandling(async (req, res) => {
-  const { limit } = req.query;
 
   const lang =
     req.headers["accept-language"]?.toLowerCase().startsWith("ar")
       ? "ar"
       : "en";
 
-  const articles = await ArticleModel.find() .lean()
-    .select("title author date image description")
-    .sort({ date: -1 })
-    .limit(Number(limit) || 0)
+  const articles = await ArticleModel.find().lean().sort({ date: -1 })
+
    
 
   if (articles.length === 0) {
@@ -94,35 +91,11 @@ export const getArticlesList = asyncHandling(async (req, res) => {
           
   return sucssesResponse({
     res,
-    message: "✅ Articles list fetched",
+    message: "✅ get all Articles",
     data: translated, // 👈 ترجمة
   });
 });
 
-// 📖 Get Article Details
-export const getArticleDetails = asyncHandling(async (req, res) => {
-  const { id } = req.params;
- const lang =
-    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
-      ? "ar"
-      : "en";
-
-  const article = await ArticleModel.findById(id).lean();
-
-  if (!article) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Article not found" });
-  }
-    const translated = translate(article , lang);
-          
-
-  return sucssesResponse({
-    res,
-    message: "✅ Article details fetched",
-    data: translated // 👈 ترجمة
-  });
-});
 
 // 🔍 Search Articles
 export const searchArticles = asyncHandling(async (req, res) => {

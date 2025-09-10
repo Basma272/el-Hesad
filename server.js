@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import ConnectDB from "./src/config/db.js";
 import servicesRoutes from "./src/routes/sevice.routes.js"
@@ -18,6 +19,7 @@ ConnectDB();
 
 const app = express(); 
 app.use(express.json());
+app.use(cors())
 app.use("/uploads",express.static("uploads"));
 
 // //  API Routes 
