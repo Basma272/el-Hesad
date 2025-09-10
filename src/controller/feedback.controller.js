@@ -23,20 +23,51 @@ export const  Add_feedback  =asyncHandling(async (req, res) => {
 
 // 📋 Get all feedback
 export const  get_feedback  =asyncHandling(async (req, res) => {
-       const lang =
-      req.headers["accept-language"]?.toLowerCase().startsWith("ar")
-        ? "ar"
-        : "en";
+
 
   const feedback = await FeedbackModel.find().sort({ createdAt: -1 }).lean();
-    const translated = translate(feedback , lang);
           
               sucssesResponse({
               res,
-              data: translated,
+              data: feedback,
               count: feedback.length,
       })
 });
 
+// ✏️ Update feedback
+export const update_feedback = asyncHandling(async (req, res) => {
+  const { id } = req.params;
+  const { username, feedback, rating } = req.body;
 
+  let updateData = { username, feedback, rating };
+
+  if (req.file) {
+    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    updateData.image = imageUrl;
+  }
+
+  const updated = await FeedbackModel.findByIdAndUpdate(id, updateData, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updated) {
+    return res.status(404).json({ success: false, message: "Feedback not found" });
+  }
+
+  res.status(200).json({ success: true, data: updated });
+});
+
+// 🗑️ Delete feedback
+export const delete_feedback = asyncHandling(async (req, res) => {
+  const { id } = req.params;
+
+  const deleted = await FeedbackModel.findByIdAndDelete(id);
+
+  if (!deleted) {
+    return res.status(404).json({ success: false, message: "Feedback not found" });
+  }
+
+  res.status(200).json({ success: true, message: "Feedback deleted successfully" });
+});
 export default router;
