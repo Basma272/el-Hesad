@@ -3,12 +3,11 @@ import express from "express";
 import { ContactModel } from "../models/contact.models.js";
 import { asyncHandling } from "../utils/error-Handling.js";
 import { sucssesResponse } from "../utils/response-Handling.js";
-import { translate } from "../utils/translate.js"
 
 
 const router = express.Router();
 
-// ➕ Add new feedback
+// ➕ Add new contact
 export const  Add_contact  =asyncHandling(async (req, res) => {
   const { username  , email , message } = req.body
   const contact = await ContactModel.create({
@@ -18,21 +17,29 @@ export const  Add_contact  =asyncHandling(async (req, res) => {
 });
 
 
-// 📋 Get all feedback
+// 📋 Get all contact
 export const  get_contact  =asyncHandling(async (req, res) => {
-     const lang =
-    req.headers["accept-language"]?.toLowerCase().startsWith("ar")
-      ? "ar"
-      : "en";
-  const contact = await ContactModel.find().lean().sort({ createdAt: -1 });
 
-  const translated = translate(contact , lang);
+  const contact = await ContactModel.find().sort({ createdAt: -1 });
+    if (!contact) return res.status(404).json({ success: false, message: "Message not found" });
+
         
             sucssesResponse({
             res,
-            data: translated,
+            data: contact,
             count: contact.length,
     })
+});
+
+// ✅ Mark message as read
+export const readMessage= asyncHandling(async (req, res) => {
+  const contact = await ContactModel.findByIdAndUpdate(
+    req.params.id,
+    { isread: true },
+    { new: true }
+  );
+  if (!contact) return res.status(404).json({ success: false, message: "Message not found" });
+  res.json({ success: true, data: contact });
 });
 
 
