@@ -70,32 +70,45 @@ export const updateArticle = asyncHandling(async (req, res) => {
   });
 });
 
-// 📃 Get Articles List
+// 📃 Get Articles List with Pagination
 export const getArticlesList = asyncHandling(async (req, res) => {
-
   const lang =
     req.headers["accept-language"]?.toLowerCase().startsWith("ar")
       ? "ar"
       : "en";
 
-  const articles = await ArticleModel.find().lean().sort({ date: -1 })
+  // 📝 pagination params
+  const page = parseInt(req.query.page) || 1;     // لو مش مبعوت => صفحة 1
+  const limit = parseInt(req.query.limit) || 10;  // لو مش مبعوت => 10 مقالات
+  const skip = (page - 1) * limit;
 
-   
+  // 🗃 get data
+  const [articles, total] = await Promise.all([
+    ArticleModel.find().lean().sort({ date: -1 }).skip(skip).limit(limit),
+    ArticleModel.countDocuments()
+  ]);
 
   if (articles.length === 0) {
     return res
       .status(404)
       .json({ success: false, message: "No articles found" });
   }
-    const translated = translate(articles , lang);
-          
+
+  const translated = translate(articles, lang);
+
   return sucssesResponse({
     res,
     message: "✅ get all Articles",
-    data: translated, // 👈 ترجمة
+    data: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+      nextPage: page < Math.ceil(total / limit) ? page + 1 : null,  // 🔥 لو عايزة تضيفيها
+      prevPage: page > 1 ? page - 1 : null,                        // 🔥 لو عايزة تضيفيها
+      items: translated
+    }
   });
 });
-
 // 📖 Get Article Details
 export const getArticleDetails = asyncHandling(async (req, res) => {
   const { id } = req.params;

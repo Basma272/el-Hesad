@@ -4,7 +4,7 @@ import { verifyTokenAdmin } from "../middleware/authJwt.js"
 import { createAndUpdate , getAllRates , calculate ,deleted} from "../controller/roi.Controller.js"
 
 const router = express.Router();
- 
+
 // ➕ Add or update ROI rate
 router.post("/", verifyTokenAdmin, createAndUpdate);
 

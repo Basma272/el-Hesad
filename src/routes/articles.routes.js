@@ -21,13 +21,13 @@ router.post("/", verifyTokenAdmin,
 router.get("/", getArticlesList);
 
 
-// 📖 Get Article Details
-router.get("/:id", getArticleDetails);
-
-
 
 // 🔍 Search Articles
 router.get("/search", searchArticles);
+
+// 📖 Get Article Details
+router.get("/:id", getArticleDetails);
+
 
 // ✏️ Update Article
 router.put("/:id", verifyTokenAdmin,  upload.single("image") ,updateArticle);
