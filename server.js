@@ -19,7 +19,27 @@ ConnectDB();
 
 const app = express(); 
 app.use(express.json());
-app.use(cors())
+
+const allowedOrigins = [
+  "http://localhost:3000",        // وقت التطوير
+  "http://el-hasad.com",          // دومين الفرونت
+  "https://el-hasad.com",         // لو عندك نسخة https
+  "http://api.el-hasad.com",      // دومين الباك إند
+  "https://api.el-hasad.com" ,     // نسخة https برضه
+  "https://el-hesad-production.up.railway.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept-Language"]
+}));
 app.use("/uploads",express.static("uploads"));
 
 // //  API Routes 
