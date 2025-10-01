@@ -21,12 +21,13 @@ const app = express();
 app.use(express.json());
 
 const allowedOrigins = [
-  "http://localhost:3000",        // وقت التطوير
-  "http://el-hasad.com",          // دومين الفرونت
-  "https://el-hasad.com",         // لو عندك نسخة https
-  "http://api.el-hasad.com",      // دومين الباك إند
-  "https://api.el-hasad.com" ,     // نسخة https برضه
-  "https://el-hesad-production.up.railway.app"
+  "http://localhost:3000/",        // وقت التطوير
+  "http://el-hasad.com/",          // دومين الفرونت
+  "https://el-hasad.com/",         // لو عندك نسخة https
+  "http://api.el-hasad.com/",      // دومين الباك إند
+  "https://api.el-hasad.com/" ,     // نسخة https برضه
+  "https://el-hesad-production.up.railway.app/",
+  "http://el-hesad-production.up.railway.app/"
 ];
 
 app.use(cors({
