@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/", verifyTokenAdmin, createAndUpdate);
 
 // 📋 Get all ROI rates
-router.get("/", verifyTokenAdmin ,getAllRates );
+router.get("/", getAllRates );
 
 // 🧮 Calculate ROI
 router.post("/calculate", calculate );

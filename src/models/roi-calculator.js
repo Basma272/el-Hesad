@@ -30,7 +30,7 @@ const RoiRateSchema = new mongoose.Schema(
       default: []
     }
 
-  },
+  }, 
   { timestamps: true }
 );
 

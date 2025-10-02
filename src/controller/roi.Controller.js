@@ -30,14 +30,13 @@ export const getAllRates = asyncHandling(async (req, res) => {
   res.json(rates);
 });
 
-// 🧮 Calculate ROI
 export const calculate = asyncHandling(async (req, res) => {
-  const { capital, name_tree } = req.body;
+  const { capital, name_tree, years } = req.body;
 
-  if (!capital || !name_tree) {
+  if (!capital || !name_tree  || !years) {
     return res.status(400).json({
       success: false,
-      message: "Please enter capital and name_tree",
+      message: "Please enter capital, name_tree and years",
     });
   }
 
@@ -49,56 +48,45 @@ export const calculate = asyncHandling(async (req, res) => {
     });
   }
 
-  const { yearly_rates, cost_per_feddan, max_feddan, feddan_rule } = record;
+  const { yearly_rates, cost_per_feddan, max_feddan, allocationType } = record;
 
-  // 🧮 حساب الفدادين من رأس المال
+  // 🧮 حساب الفدادين
   let feddans = capital / cost_per_feddan;
-  if (feddans > max_feddan) feddans = max_feddan;
 
-  switch (feddan_rule) {
-    case "integer":
-      feddans = Math.floor(feddans);
-      break;
-
-    case "one-and-half":
-      if (feddans <= 1.5) {
-        feddans = feddans <= 1 ? 1 : 1.5;
-      } else {
-        feddans = Math.floor(feddans);
-      }
-      break;
+  if (allocationType === "integer") {
+    feddans = Math.floor(feddans);
+  } else if (allocationType === "half") {
+    feddans = Math.floor(feddans);
+    if (capital / cost_per_feddan - feddans >= 0.5) {
+      feddans += 0.5;
+    }
+  } else if (allocationType === "any") {
+    feddans = Math.round(feddans * 2) / 2;
   }
 
-  // 📈 حساب العوائد لكل سنة (لحد 15 سنة)
+  if (feddans > max_feddan) feddans = max_feddan;
+
+  // 📈 حساب العوائد حسب عدد السنين اللي المستخدم اختارها
   let yearlyReturns = [];
   let cumulative = 0;
 
-  for (let year = 1; year <= 15; year++) {
-    let rate = yearly_rates[year - 1];
-
-    // لو النسبة مش موجودة ناخد آخر واحدة
-    if (rate === undefined && yearly_rates.length > 0) {
-      rate = yearly_rates[yearly_rates.length - 1];
-    }
-
+  for (let i = 0; i < years; i++) {
+    const year = i + 1;
+    // لو مفيش نسبة للـ year ده، ناخد آخر نسبة موجودة
+    const rate = yearly_rates[i] ?? yearly_rates[yearly_rates.length - 1];
     const expected = capital * (1 + rate);
     const profit = expected - capital;
     cumulative += profit;
-
-    yearlyReturns.push({
-      year,
-      rate,
-      expected,
-      profit,
-      cumulative,
-    });
+    yearlyReturns.push({ year, rate, expected, profit, cumulative });
   }
 
   res.json({
     success: true,
     name_tree,
     capital,
+    years,
     feddans,
+    allocationType,
     yearlyReturns,
   });
 });
